@@ -18,4 +18,8 @@ export class UserService {
   loadUserList():  User[] {
     return this.userList;
   }
+  
+    addUser(newUser:User) {
+    this.userList.push(newUser);
+  }
 }
