@@ -1,0 +1,35 @@
+<div class="container">
+  <!--  -->
+  <header>
+      <nav>
+          <div class="hamburger">
+              <div></div>
+              <div></div>
+              <div></div>
+          </div>
+      </nav>
+      <div class="left">
+          <button class="logout">{{ 'logout'| translate}}</button>
+      </div>
+      <div class="center">
+          <button>{{ 'linkToPoly'| translate}}</button>
+          <button>{{ 'linkToDummy'| translate}}</button>
+      </div>
+      <div class="right">
+          <img src="favicon.ico" alt="angular" />
+      </div>
+  </header>
+  <main>
+      <aside>
+        <app-autocomplete [fieldName]="'name'" 
+                    [fieldId]="'id'" 
+                    [filterType]="Enums.FilterType.byNameOrId"
+                    [isDisplayNewItem]="true"
+                    [items]="userList" (onSelect)="userSelect($event)">
+                  </app-autocomplete>
+      </aside>
+      <section>
+          <button (click)="changeDirection()">{{ 'changeDirection'| translate}}</button>
+      </section>
+  </main>
+</div>
