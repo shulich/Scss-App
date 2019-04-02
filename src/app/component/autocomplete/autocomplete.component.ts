@@ -9,7 +9,6 @@ import { User } from 'src/app/model/user';
 @Component({
   selector: 'app-autocomplete',
   templateUrl: './autocomplete.component.html',
-  styleUrls: ['./autocomplete.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: AutocompleteComponent,
