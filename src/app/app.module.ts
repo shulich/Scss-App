@@ -9,11 +9,13 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { httpLoaderFactory } from './service/httpLoaderFactory';
 import { AutocompleteComponent } from './component/autocomplete/autocomplete.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ParentAutocompleteComponent } from './component/parent-autocomplete/parent-autocomplete.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AutocompleteComponent,
+    ParentAutocompleteComponent,
   ],
   imports: [
     FormsModule,

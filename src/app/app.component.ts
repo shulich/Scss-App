@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FilterType } from './component/autocomplete/autocomplete.enum';
-import { User } from './model/user';
 import { UserService } from './service/user.service';
-import { Enums, EnumsAware } from './enumsaware.decorator';
 
 @Component({
   selector: 'app-root',
@@ -11,21 +8,12 @@ import { Enums, EnumsAware } from './enumsaware.decorator';
   styleUrls: ['./app.component.scss']
 })
 
-@EnumsAware
 export class AppComponent {
 
-  public Enums: Enums = new Enums();
 
   title = 'scss-app';
   direction = "ltr";
-  userList: User[] = [
-    { id: 1, name: 'shulamit' },
-    { id: 2, name: 'chagit' },
-    { id: 3, name: 'chaya' },
-    { id: 4, name: 'gilad' },
-    { id: 5, name: 'rini' }
-  ];
-
+  
   constructor(private translate: TranslateService, private userService: UserService) {
 
     //this.userList = this.userService.loadUserList();
@@ -38,7 +26,6 @@ export class AppComponent {
   }
 
   changeDirection() {
-    debugger;
     if (this.direction == "ltr") {
       document.getElementsByClassName("container")[0].classList.add("rtl");
       this.direction = "rtl;"
@@ -49,11 +36,4 @@ export class AppComponent {
     }
   }
 
-  userSelect(value) {
-    debugger;
-    if (value.isNewItem) {
-      this.userList.push(value.item);
-    }
-  }
-
-}
+ }

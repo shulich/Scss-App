@@ -21,12 +21,7 @@
   </header>
   <main>
       <aside>
-        <app-autocomplete [fieldName]="'name'" 
-                    [fieldId]="'id'" 
-                    [filterType]="Enums.FilterType.byNameOrId"
-                    [isDisplayNewItem]="true"
-                    [items]="userList" (onSelect)="userSelect($event)">
-                  </app-autocomplete>
+      <app-parent-autocomplete></app-parent-autocomplete>
       </aside>
       <section>
           <button (click)="changeDirection()">{{ 'changeDirection'| translate}}</button>
