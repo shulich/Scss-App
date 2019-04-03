@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ViewChild, Input, ElementRef }
 import { MatAutocomplete } from '@angular/material';
 import { NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { FilterType } from './autocomplete.enum';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { User } from 'src/app/model/user';
 
@@ -18,9 +18,8 @@ import { User } from 'src/app/model/user';
 
 export class AutocompleteComponent implements OnInit {
 
-  filteredItems: any;
+  filteredItems: Observable<any[]>;
   newUserId;
-  _items: any[];
   query: any;
 
   @Input() filterType: FilterType = FilterType.startsWith;
@@ -38,30 +37,32 @@ export class AutocompleteComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.filteredItems = this.myControl.valueChanges
+      this.filteredItems = this.myControl.valueChanges
       .pipe(
-        startWith(''),
+        startWith<string | any>(''),
+        map(value => typeof value === 'string' ? value : value[this.fieldName]),
         map(query => query ? this.keyup(query) : this.items.slice())
-
       );
   }
 
 
   keyup(query) {
+    if (query != undefined) {
+      let filterItems = this.items.filter(item =>
+        this.filter(query, item));
 
-    let filterItems = this.items.filter(item =>
-      this.filter(query, item));
-
-    if (this.isDisplayNewItem && isNaN(parseInt(query))) {//check only if the query not number
-      let isExitSameWord = this.items.filter(item => item[this.fieldName].toLowerCase() == query.toLowerCase()).length == 1;
-      if (!isExitSameWord) {
-        let newItem = this.items[this.items.length - 1];
-        this.newUserId = newItem[this.fieldId] = this.items[this.items.length - 1][this.fieldId] + 1;
-        newItem[this.fieldName] = query + "new";
-        filterItems.unshift(newItem);
+      if (this.isDisplayNewItem && isNaN(parseInt(query))) {//check only if the query not number
+        let isExitSameWord = this.items.filter(item => item[this.fieldName].toLowerCase() == query.toLowerCase()).length == 1;
+        if (!isExitSameWord) {
+          let newItem = {};
+          this.newUserId = this.items[this.items.length - 1][this.fieldId] + 1;
+          newItem[this.fieldId] = this.newUserId;
+          newItem[this.fieldName] = query + "new";
+          filterItems.unshift(newItem);
+        }
       }
+      return filterItems;
     }
-    return filterItems;
   }
 
   onselect(value) {
@@ -72,7 +73,7 @@ export class AutocompleteComponent implements OnInit {
     else {
       this.onSelect.emit({ "isNewItem": false, "item": value });
     }
-    if (this.userFilterInput != undefined){
+    if (this.userFilterInput != undefined) {
       this.userFilterInput.nativeElement.value = value ? value[this.fieldName] : undefined;
     }
   }
