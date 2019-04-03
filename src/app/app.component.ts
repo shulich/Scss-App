@@ -10,9 +10,7 @@ import { UserService } from './service/user.service';
 
 export class AppComponent {
 
-
-  title = 'scss-app';
-  direction = "ltr";
+   direction = "ltr";
   
   constructor(private translate: TranslateService, private userService: UserService) {
     translate.setDefaultLang('he');
