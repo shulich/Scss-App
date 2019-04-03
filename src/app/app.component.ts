@@ -19,9 +19,6 @@ export class AppComponent {
     translate.use('he');
   }
 
-  async ngOnInit() {
-  }
-
   changeDirection() {
     if (this.direction == "ltr") {
       document.getElementsByClassName("container")[0].classList.add("rtl");
