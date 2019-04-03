@@ -15,9 +15,6 @@ export class AppComponent {
   direction = "ltr";
   
   constructor(private translate: TranslateService, private userService: UserService) {
-
-    //this.userList = this.userService.loadUserList();
-
     translate.setDefaultLang('he');
     translate.use('he');
   }
