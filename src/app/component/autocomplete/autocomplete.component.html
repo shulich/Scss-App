@@ -1,8 +1,7 @@
 <div class="mat-app-background basic-container">
   <input placeholder="{{'inputUserAutocompelete' | translate}}"
          #userFilterInput type="text" aria-label="select or create new"
-         matInput [formControl]="myControl" (keyup)="keyup($event)"
-         [matAutocomplete]="auto" >
+         matInput [formControl]="myControl" [matAutocomplete]="auto" >
 
   <mat-autocomplete class="matAutocomplete" #auto="matAutocomplete" 
    (optionSelected)="onselect($event.option.value)" >
@@ -11,3 +10,5 @@
     </mat-option>
   </mat-autocomplete>
 </div>
+
+

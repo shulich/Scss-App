@@ -1,10 +1,11 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, Input, ElementRef } from '@angular/core';
 import { MatAutocomplete } from '@angular/material';
 import { NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
-import { FilterType } from './autocomplete.enum';
+import { FilterType,  } from './autocomplete.enum';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { User } from 'src/app/model/user';
+import { Result } from './autocomplete.model';
 
 @Component({
   selector: 'app-autocomplete',
@@ -37,55 +38,68 @@ export class AutocompleteComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
       this.filteredItems = this.myControl.valueChanges
       .pipe(
         startWith<string | any>(''),
         map(value => typeof value === 'string' ? value : value[this.fieldName]),
         map(query => query ? this.keyup(query) : this.items.slice())
       );
+
   }
 
 
-  keyup(query) {
-    if (query != undefined) {
-      let filterItems = this.items.filter(item =>
-        this.filter(query, item));
+  keyup(query: string) {
+
+      if(query == undefined) return;
+
+      let filterItems = this.items.filter(item => this.filter(query, item));
 
       if (this.isDisplayNewItem && isNaN(parseInt(query))) {//check only if the query not number
+        //check if the word is the same as an existing word
         let isExitSameWord = this.items.filter(item => item[this.fieldName].toLowerCase() == query.toLowerCase()).length == 1;
         if (!isExitSameWord) {
-          let newItem = {};
-          this.newUserId = this.items[this.items.length - 1][this.fieldId] + 1;
-          newItem[this.fieldId] = this.newUserId;
-          newItem[this.fieldName] = query + "new";
-          filterItems.unshift(newItem);
+            filterItems.unshift(this.getNewItem(query));
         }
       }
       return filterItems;
-    }
   }
 
-  onselect(value) {
+  onselect(value: any) {
+
+    //check if the word is new and isDisplayNewItem=true
     if (this.isDisplayNewItem && value != undefined && this.newUserId == value[this.fieldId]) {
+      //cut 'new' word
       value[this.fieldName] = value[this.fieldName].slice(0, value[this.fieldName].length - 3);
-      this.onSelect.emit({ "isNewItem": true, "item": value });
+      this.onSelect.emit(new Result(true,value));
     }
     else {
-      this.onSelect.emit({ "isNewItem": false, "item": value });
+      this.onSelect.emit(new Result(false,value));
     }
+
     if (this.userFilterInput != undefined) {
       this.userFilterInput.nativeElement.value = value ? value[this.fieldName] : undefined;
     }
   }
 
   filter(query: any, item: any) {
-    return (this.filterType == FilterType.startsWith &&
-      item[this.fieldName].toLowerCase().startsWith(query.toLowerCase())) ||
-      (this.filterType == FilterType.byName &&
-        item[this.fieldName].toLowerCase().includes(query.toLowerCase())) ||
-      (this.filterType == FilterType.byNameOrId &&
-        (item[this.fieldName].toLowerCase().includes(query.toLowerCase()) ||
-          item[this.fieldId].toString() == query));
+    //filter by type: startsWith/byName/byNameOrId
+    return (this.filterType == FilterType.startsWith && 
+                  item[this.fieldName].toLowerCase().startsWith(query.toLowerCase())) ||
+           (this.filterType == FilterType.byName &&
+                  item[this.fieldName].toLowerCase().includes(query.toLowerCase())) ||
+           (this.filterType == FilterType.byNameOrId &&
+                  (item[this.fieldName].toLowerCase().includes(query.toLowerCase()) ||
+                   item[this.fieldId].toString() == query));
+  }
+
+  getNewItem(query: string) {
+    //create new item by fieldId and fieldName
+    let newItem = {};
+    this.newUserId = this.items[this.items.length - 1][this.fieldId] + 1;
+    newItem[this.fieldId] = this.newUserId;
+    newItem[this.fieldName] = query + "new";
+    return newItem;
   }
 
 }
